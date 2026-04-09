@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 const { validarDatos, validarArchivoPDF } = require('./middleware');
-const multer = require('multer'); // La nueva librería para manejar el PDF
+const multer = require('multer'); // librería para manejar el PDF
 const axios = require('axios');
 const FormData = require('form-data');
 const fs = require('fs'); // Librería nativa de Node para leer archivos del disco
@@ -12,18 +12,9 @@ const PORT = process.env.PORT;
 app.use(cors());
 app.use(express.json());
 
-// ==========================================
 // CONFIGURACIÓN DE MULTER (Manejo de Archivos)
-// Le decimos que guarde los PDFs entrantes en una carpeta llamada 'uploads'
-// ==========================================
 const upload = multer({ dest: 'uploads/' });
 
-
-// ==========================================
-// 4. LA RUTA PRINCIPAL (La cadena de montaje)
-// OJO AL ORDEN: 
-// 1ro Multer agarra el archivo ('documento_pdf') -> 2do Zod valida todo -> 3ro Ejecutamos
-// ==========================================
 app.post('/api/onboarding', upload.single('documento_pdf'), validarDatos, validarArchivoPDF, async (req, res) => {
     
     const datosCliente = req.body;
@@ -32,12 +23,10 @@ app.post('/api/onboarding', upload.single('documento_pdf'), validarDatos, valida
     console.log("=======================================");
     console.log(`✅ NUEVO CLIENTE VALIDADO Y ACEPTADO`);
     console.log(`🏢 Empresa: ${datosCliente.razon_social} (RUC: ${datosCliente.ruc})`);
-    console.log(`📄 PDF guardado temporalmente en: ${archivo.path}`);
     console.log("=======================================");
 
-    // Aquí (en el futuro) conectaremos el código que le envía esto a n8n
     try {
-        console.log("⚙️ Enviando datos a n8n...");
+        console.log("Enviando datos a n8n...");
         const form = new FormData();
         
         // 1. Enviamos los datos de texto (que n8n leerá en $json.body)
@@ -47,7 +36,7 @@ app.post('/api/onboarding', upload.single('documento_pdf'), validarDatos, valida
         // 2. Enviamos el PDF. ¡OJO! El nombre 'data' coincide exactamente con tu Nodo 2
         form.append('data', fs.createReadStream(archivo.path));
 
-        // 3. Disparamos el Webhook (Reemplaza la URL por la tuya de Test de n8n)
+        // 3. Disparamos el Webhook
         const URL_WEBHOOK_N8N = process.env.URL_N8N_WEBHOOK;
         
         await axios.post(URL_WEBHOOK_N8N, form, {
@@ -56,7 +45,7 @@ app.post('/api/onboarding', upload.single('documento_pdf'), validarDatos, valida
 
         console.log("🚀 ¡Webhook disparado con éxito!");
 
-        // 4. (Opcional) Borramos el archivo temporal de nuestro servidor para ahorrar espacio
+        // 4. Borramos el archivo temporal de nuestro servidor para ahorrar espacio
         fs.unlinkSync(archivo.path);
 
     } catch (error) {

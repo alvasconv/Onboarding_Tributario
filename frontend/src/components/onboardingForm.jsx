@@ -37,7 +37,7 @@ function OnboardingForm() {
 
   return (
     <div className="onboarding-card">
-      <h2 className="onboarding-title">Onboarding Trinutario</h2>
+      <h2 className="onboarding-title">Onboarding Tributario</h2>
       <p className="onboarding-subtitle">Ingrese los datos del nuevo cliente tributario.</p>
 
       <form onSubmit={handleSubmit} className="onboarding-form">
