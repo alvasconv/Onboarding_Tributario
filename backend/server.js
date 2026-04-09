@@ -7,7 +7,7 @@ const FormData = require('form-data');
 const fs = require('fs'); // Librería nativa de Node para leer archivos del disco
 
 const app = express();
-const PORT = process.env.PORT;
+const PORT = process.env.PORT || 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -61,6 +61,6 @@ app.post('/api/onboarding', upload.single('documento_pdf'), validarDatos, valida
     });
 });
 
-app.listen(PORT, () => {
-    console.log(`🚀 Servidor corporativo escuchando en http://localhost:${PORT}`);
+app.listen(PORT, "0.0.0.0", () => {
+    console.log(`Servidor corriendo en el puerto ${PORT}`);
 });
