@@ -4,7 +4,7 @@ const { validarDatos, validarArchivoPDF } = require('./middleware');
 const multer = require('multer'); // La nueva librería para manejar el PDF
 
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT;
 
 app.use(cors());
 app.use(express.json());
