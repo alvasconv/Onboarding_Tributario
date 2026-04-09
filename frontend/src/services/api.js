@@ -16,6 +16,7 @@ export const onboardingService = {
       });
       return respuesta.data;
     } catch (error) {
+        alert("Error en el móvil: " + error.message);
       const mensajeError = error.response?.data?.error;
       throw new Error(mensajeError);
     }
